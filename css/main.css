@@ -92,4 +92,36 @@ abbr[title] { text-decoration: none; }
 .replay-pause { background-image:url(../img/replay_pause.png); }
 .replay-next { background-image:url(../img/replay_next.png); }
 .replay-end { background-image:url(../img/replay_end.png); }
-}
+
+#preload_d0 { background: url(../img/d0.svg) no-repeat -9999px -9999px; }
+#preload_d1 { background: url(../img/d1.svg) no-repeat -9999px -9999px; }
+#preload_d2 { background: url(../img/d2.svg) no-repeat -9999px -9999px; }
+#preload_d3 { background: url(../img/d3.svg) no-repeat -9999px -9999px; }
+#preload_d4 { background: url(../img/d4.svg) no-repeat -9999px -9999px; }
+#preload_d5 { background: url(../img/d5.svg) no-repeat -9999px -9999px; }
+#preload_d6 { background: url(../img/d6.svg) no-repeat -9999px -9999px; }
+#preload_d7 { background: url(../img/d7.svg) no-repeat -9999px -9999px; }
+#preload_d8 { background: url(../img/d8.svg) no-repeat -9999px -9999px; }
+#preload_d9 { background: url(../img/d9.svg) no-repeat -9999px -9999px; }
+#preload_type0 { background: url(../img/type0.svg) no-repeat -9999px -9999px; }
+#preload_type1 { background: url(../img/type1.svg) no-repeat -9999px -9999px; }
+#preload_type2 { background: url(../img/type2.svg) no-repeat -9999px -9999px; }
+#preload_type3 { background: url(../img/type3.svg) no-repeat -9999px -9999px; }
+#preload_type4 { background: url(../img/type4.svg) no-repeat -9999px -9999px; }
+#preload_type5 { background: url(../img/type5.svg) no-repeat -9999px -9999px; }
+#preload_type6 { background: url(../img/type6.svg) no-repeat -9999px -9999px; }
+#preload_type7 { background: url(../img/type7.svg) no-repeat -9999px -9999px; }
+#preload_type8 { background: url(../img/type8.svg) no-repeat -9999px -9999px; }
+#preload_type0_green { background: url(../img/type0_green.svg) no-repeat -9999px -9999px; }
+#preload_type1_green { background: url(../img/type1_green.svg) no-repeat -9999px -9999px; }
+#preload_type2_green { background: url(../img/type2_green.svg) no-repeat -9999px -9999px; }
+#preload_type3_green { background: url(../img/type3_green.svg) no-repeat -9999px -9999px; }
+#preload_type4_green { background: url(../img/type4_green.svg) no-repeat -9999px -9999px; }
+#preload_type5_green { background: url(../img/type5_green.svg) no-repeat -9999px -9999px; }
+#preload_type6_green { background: url(../img/type6_green.svg) no-repeat -9999px -9999px; }
+#preload_type7_green { background: url(../img/type7_green.svg) no-repeat -9999px -9999px; }
+#preload_type8_green { background: url(../img/type8_green.svg) no-repeat -9999px -9999px; }
+#preload_flag { background: url(../img/flag.svg) no-repeat -9999px -9999px; }
+#preload_flag_orange { background: url(../img/flag_orange.svg) no-repeat -9999px -9999px; }
+#preload_closed_green { background: url(../img/closed_green.svg) no-repeat -9999px -9999px; }
+#preload_closed_orange { background: url(../img/closed_orange.svg) no-repeat -9999px -9999px; }
