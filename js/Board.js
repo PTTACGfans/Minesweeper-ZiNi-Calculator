@@ -213,7 +213,7 @@ class Board {
 				return result;
 			var max_index = {x:max_index_lst[choose_index].x, y:max_index_lst[choose_index].y};
 
-			if (max_premium >= 0)
+			if (max_premium >= -0.001)
 			{
 				if (!this.cells[max_index.x][max_index.y].is_open)
 				{
