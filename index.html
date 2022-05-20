@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en" ng-app="mainApp">
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="PTTACGfans">
+	<meta name="generator" content="Hugo 0.88.1">
+	<title>Minesweeper ZiNi Calculator</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="./bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./css/bootstrap_sidebars.css" rel="stylesheet">
+	<link href="./css/main.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+	<link rel="icon" href="./img/calculator-fill.svg">
+	
+	<script src="./bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="./js/bootstrap_sidebars.js"></script>
+	<script src="./js/bootstrap_tooltip.js" defer></script>
+	<script src="./angular/angular.min.js"></script>
+	<script src="./js/seedrandom.min.js"></script>
+	<script src="./js/Board.js"></script>
+	<script src="./js/main.js"></script>
+
+  </head>
+  <body>
+
+	<nav class="navbar fixed-top navbar-light" style="background-color: #e3f2fd;">
+	  <div class="container-fluid">
+		<span class="navbar-brand mb-0 h1 fw-bold" style="font-size: 1.5rem;">
+			<i class="bi-calculator-fill"></i>
+			<a class="navbar-brand" style="font-size: 1.5rem;" href="https://minesweeper.online/">Minesweeper ZiNi Calculator</a>
+		</span>
+		<div data-bs-toggle="modal" data-bs-target="#creditModal" class="credit-div">
+			<i class="bi-info-circle"></i>
+		</div>
+	  </div>
+	</nav>
+
+	<!-- Modal -->
+	<div class="modal fade" id="creditModal" tabindex="-1" aria-labelledby="creditModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="creditModalLabel">Credit List</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>Website designer: PTTACGfans</p>
+					<p>Assets provided: <a href="https://minesweeper.online/" target="_blank">Minesweeper Online</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<main id="main" ng-controller="mainController" style="opacity: 0;">
+		<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 225px; overflow-y: auto; margin-top: 55px; padding: 12px!important">
+		
+			<div class="card mb-3">
+				<div class="card-body">
+					<h5 class="card-title fw-bold">Board Size</h5>
+
+					<div class="form-check">
+					  <input class="form-check-input" type="radio" name="boardSizeRadio" id="boardSizeBeg" ng-model="boardSize" value="boardSizeBeg" checked>
+					  <label class="form-check-label" for="boardSizeBeg">
+						Beginner
+					  </label>
+					</div>
+					<div class="form-check">
+					  <input class="form-check-input" type="radio" name="boardSizeRadio" id="boardSizeInt" ng-model="boardSize" value="boardSizeInt">
+					  <label class="form-check-label" for="boardSizeInt">
+						Intermediate
+					  </label>
+					</div>
+					<div class="form-check">
+					  <input class="form-check-input" type="radio" name="boardSizeRadio" id="boardSizeExp" ng-model="boardSize" value="boardSizeExp">
+					  <label class="form-check-label" for="boardSizeExp">
+						Expert
+					  </label>
+					</div>
+					<div class="form-check">
+					  <input class="form-check-input" type="radio" name="boardSizeRadio" id="boardSizeCus" ng-model="boardSize" value="boardSizeCus">
+					  <label class="form-check-label" for="boardSizeCus">
+						Custom
+					  </label>
+						<div class="input-group input-group-sm">
+						  <span class="input-group-text" style="width: 60px;" id="boardSizeCus_width">Width</span>
+						  <input type="number" ng-model="boardSizeCus_width" ng-mousedown="boardSize='boardSizeCus'" ng-blur="check_boardSizeCus_width()" class="form-control" aria-label="Board Size Custom Width" aria-describedby="boardSizeCus_width">
+						</div>
+						<div class="input-group input-group-sm">
+						  <span class="input-group-text" style="width: 60px;" id="boardSizeCus_height">Height</span>
+						  <input type="number" ng-model="boardSizeCus_height" ng-mousedown="boardSize='boardSizeCus'" ng-blur="check_boardSizeCus_height()" class="form-control" aria-label="Board Size Custom Height" aria-describedby="boardSizeCus_height">
+						</div>
+					</div>
+					<button type="button" ng-click="newBoard()" class="btn btn-primary mt-3">New Board</button>
+					<button type="button" ng-show="showRandom" ng-click="randomBoard()" class="btn btn-primary mt-3 mb-3">Random Board</button>
+					<div ng-show="showRandom" class="input-group input-group-sm">
+					  <span class="input-group-text" style="width: 60px;" id="randomMines">Mines</span>
+					  <input type="number" ng-model="randomMines" class="form-control" aria-label="Random Mines" aria-describedby="randomMines">
+					</div>
+				</div>
+			</div>
+			
+			<div class="card mb-3">
+				<div class="card-body">
+					<h5 class="card-title fw-bold">Board Info</h5>
+					<p class="card-text mb-0">Mines:  {{mines}}</p>
+					<p class="card-text mb-0">3BV:  <abbr>{{bbbv}}</abbr></p>
+					<p class="card-text mb-0">ZiNi:  <abbr data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{zini_title}}">{{zini}}</abbr></p>
+					<p class="card-text mb-0">Efficiency:  <abbr data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{eff_title}}">{{eff}}</abbr></p>
+					
+					<button type="button" ng-click="calculate()" class="btn btn-primary mt-3">Calculate</button>
+				</div>
+			</div>
+
+			<div class="card mb-3">
+				<div class="card-body">
+					<h5 class="card-title fw-bold">Advanced Setting</h5>
+				</div>
+
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">
+						ZiNi Loop Count
+						<i class="bi-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Bigger loop count become more accurate but also take more time, or use dynamic to find suited value by board size"></i>
+						
+						<div class="form-check">
+						  <input class="form-check-input" type="radio" name="ziniLoopCountRadio" id="ziniLoopCountDynamic" ng-model="ziniLoopType" value="ziniLoopCountDynamic" checked>
+						  <label class="form-check-label" for="ziniLoopCountDynamic">
+							Dynamic
+						  </label>
+						</div>
+						<div class="form-check">
+						  <input class="form-check-input" type="radio" name="ziniLoopCountRadio" id="ziniLoopCountFixed" ng-model="ziniLoopType" value="ziniLoopCountFixed">
+						  <label class="form-check-label" for="ziniLoopCountFixed">
+							Fixed Value
+						  </label>
+							<div class="input-group input-group-sm">
+							  <input type="number" ng-model="ziniLoopCountFixed" ng-mousedown="ziniLoopType='ziniLoopCountFixed'" ng-blur="check_ziniLoopCountFixed()" class="form-control" aria-label="Zini Algorithm Loop Count" aria-describedby="algorithmZini_loop">
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item">
+						Tile Size
+						<select ng-model="tileSize" ng-change="calculateBoardPx()" class="form-select" aria-label="Tile Size select">
+						  <option value="8">8 pixels</option>
+						  <option value="10">10 pixels</option>
+						  <option value="12">12 pixels</option>
+						  <option value="14">14 pixels</option>
+						  <option value="16">16 pixels</option>
+						  <option value="18">18 pixels</option>
+						  <option value="20">20 pixels</option>
+						  <option value="22">22 pixels</option>
+						  <option value="24" selected>24 pixels</option>
+						  <option value="26">26 pixels</option>
+						  <option value="28">28 pixels</option>
+						  <option value="30">30 pixels</option>
+						  <option value="32">32 pixels</option>
+						  <option value="36">36 pixels</option>
+						  <option value="40">40 pixels</option>
+						  <option value="44">44 pixels</option>
+						  <option value="48">48 pixels</option>
+						</select>
+					</li>
+					<li class="list-group-item">
+						Display Speed
+						<div class="input-group">
+						  <input type="number" ng-model="displaySpeed" ng-blur="check_displaySpeed()" step="50" class="form-control" aria-label="Display Speed" aria-describedby="displaySpeed">
+						  <span class="input-group-text">ms</span>
+						</div>
+					</li>
+					<li class="list-group-item">
+						Highlight Path
+						<div class="form-check form-switch">
+							<input type="checkbox" ng-model="highlightPath" ng-change="setAllCellCSS_result(cells)" class="form-check-input" role="switch" id="highlight_path" checked>
+						</div>
+					</li>
+					<li class="list-group-item">
+						Highlight Mines
+						<div class="form-check form-switch">
+							<input type="checkbox" ng-model="highlightMines" ng-change="setAllCellCSS_result(cells)" class="form-check-input" role="switch" id="highlight_mines">
+						</div>
+					</li>
+				</ul>				
+			</div>			
+		</div>
+		
+		<!--
+		<div class="b-example-divider"></div>
+		-->
+		
+		<div class="container-fluid main-div" style="margin-top: 55px; padding: 12px!important; ">
+			<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="editor_tab" data-bs-toggle="tab" data-bs-target="#editor" type="button" role="tab" aria-controls="editor" aria-selected="true">Editor</button>
+				</li>
+				<li ng-show="hasResult" class="nav-item" role="presentation">
+					<button class="nav-link" id="result_tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Result</button>
+				</li>
+			</ul>
+			
+			<div class="tab-content" id="myTabContent">
+			
+				<div class="tab-pane fade show active" id="editor" role="tabpanel" aria-labelledby="editor_tab">
+					<div class="container-fluid p-0">
+						<div id="editor_baord_outer" class="editor board board-outer" style="width: {{boardWidthPx+40+boardScrollPx_EditorX}}px; height: {{boardHeightPx+105+boardScrollPx_EditorY}}px;">
+						
+							<div class="editor board board-header">
+								<div ng-show="boardWidthPx >= 70" class="counter-div" ng-style="{'width': (editorConter.d4==0)?'59px':'78px'}">
+									<div id="editor_counter1000" ng-show="editorConter.d4!=0" class="counter background-url counter-{{editorConter.d4}}"></div>
+									<div id="editor_counter100" class="counter background-url counter-{{editorConter.d3}}"></div>
+									<div id="editor_counter10" class="counter background-url counter-{{editorConter.d2}}"></div>
+									<div id="editor_counter1" class="counter background-url counter-{{editorConter.d1}}"></div>				
+								</div>
+							</div>
+							
+							<div id="editor_baord_inner" class="editor board board-inner">
+								<div style="width: {{boardWidthPx}}px; height: {{boardHeightPx}}px;">
+									<div ng-repeat="cell in cells" ng-mouseup="clickCell(cell)" x="{{cell.x}}" y="{{cell.y}}" ng-class="cell.editor_css" class="background-url cell-size{{tileSize}}"></div>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			  
+				<div class="tab-pane fade" id="result" role="tabpanel" aria-labelledby="result_tab">
+					<div class="container-fluid p-0">
+						<div id="result_baord_outer" class="result board board-outer" style="width: {{boardWidthPx+40+boardScrollPx_ResultX}}px; height: {{boardHeightPx+175+boardScrollPx_ResultY}}px;">
+						
+							<div class="result board board-header">
+								<div class="counter-div" ng-style="{'width': (resultConter.d4==0)?'59px':'78px'}">
+									<div id="replay_counter1000" ng-show="resultConter.d4!=0" class="counter background-url counter-{{resultConter.d4}}"></div>
+									<div id="replay_counter100" class="counter background-url counter-{{resultConter.d3}}"></div>
+									<div id="replay_counter10" class="counter background-url counter-{{resultConter.d2}}"></div>
+									<div id="replay_counter1" class="counter background-url counter-{{resultConter.d1}}"></div>				
+								</div>
+							</div>
+							
+							<div id="result_baord_inner" class="result board board-inner" style="width: {{boardWidthPx+10+boardScrollPx_ResultX}}px; position: relative">
+								<div style="width: {{boardWidthPx}}px; height: {{boardHeightPx}}px; position: replative;">
+									<div ng-repeat="cell in cells" x="{{cell.x}}" y="{{cell.y}}" ng-class="cell.result_css" class="background-url cell-size{{tileSize}} board-closed"></div>
+									<div id="replay_cursor" class="cell-size{{tileSize}}" style="left: {{replay_cursor.left}}px; top: {{replay_cursor.top}}px; opacity: {{replay_cursor.opacity}};"></div>
+								</div>
+							</div>
+							
+							<div id="replay_div">							
+								<div id="replay_timeline">
+									<div id="replay_bar" ng-click="click_replayBar($event)" ng-mousemove="drag_replayBar($event)" ng-mouseenter="replay_tooltip.show=true" ng-mouseleave="replay_tooltip.show=false"></div>
+									<div id="replay_progress" class="background-url" style="left: {{replay_progress}}px;"></div>
+									<div id="replay_tooltip" ng-show="replay_tooltip.show" style="left: {{replay_tooltip.left}}px;">{{replay_tooltip.text}}</div>
+								</div>
+								<div id="replay_control_panel">
+									<button id="replay-start" ng-click="replay_start()" class="replay-control-button background-url replay-start"></button>
+									<button id="replay-previous" ng-click="replay_previous()" class="replay-control-button background-url replay-previous"></button>
+									<button id="replay-play" ng-click="replay_play()" ng-show="!isPlaying" class="replay-control-button background-url replay-play"></button>
+									<button id="replay-pause" ng-click="replay_pause()" ng-show="isPlaying" class="replay-control-button background-url replay-pause"></button>
+									<button id="replay-next" ng-click="replay_next()" class="replay-control-button background-url replay-next"></button>
+									<button id="replay-end" ng-click="replay_end()" class="replay-control-button background-url replay-end"></button>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</main>
+  </body>
+</html>
