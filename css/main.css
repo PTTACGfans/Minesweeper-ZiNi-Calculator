@@ -121,6 +121,7 @@ abbr[title] { text-decoration: none; }
 #preload_type6_green { background: url(../img/type6_green.svg) no-repeat -9999px -9999px; }
 #preload_type7_green { background: url(../img/type7_green.svg) no-repeat -9999px -9999px; }
 #preload_type8_green { background: url(../img/type8_green.svg) no-repeat -9999px -9999px; }
+#preload_mine { background: url(../img/mine.svg) no-repeat -9999px -9999px; }
 #preload_flag { background: url(../img/flag.svg) no-repeat -9999px -9999px; }
 #preload_flag_orange { background: url(../img/flag_orange.svg) no-repeat -9999px -9999px; }
 #preload_closed { background: url(../img/closed.svg) no-repeat -9999px -9999px; }
