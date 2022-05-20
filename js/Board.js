@@ -192,7 +192,7 @@ class Board {
 				});
 
 				if (!cell.is_open)
-					premium--;
+					premium-=1.001;
 
 				premium--;
 				
