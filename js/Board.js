@@ -196,8 +196,8 @@ class Board {
 
 				premium--;
 				
-				//if (premium <=0 && cell.is_open && unflagged==0) // remove useless chord
-				//	return;
+				if (premium <=0 && cell.is_open && unflagged==0) // remove useless chord
+					return;
 
 				if (premium >= max_premium)
 				{
