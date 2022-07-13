@@ -159,8 +159,6 @@ class Board {
 			var max_index = {x:-1, y:-1};
 
 			this.cells.forEach(e => e.forEach(cell => {
-				if (cell.x == 8 && cell.y == 11)
-					var temp = 0;
 				if (cell.number == -1)
 					return;
 				var premium = 0; // [adjacent 3bv] - [adjacent unflagged mines] - 1_[if cell is closed] - 1
@@ -280,7 +278,7 @@ class Board {
 							}
 						});
 						if (behind_opening)
-							result.zini_path.push({x:opening_index.x, y:opening_index.y, click:3}); //left click
+							result.zini_path.push({x:opening_index.x, y:opening_index.y, click:1}); //left click
 						else
 							result.zini_path.push({x:max_index.x, y:max_index.y, click:1}); //left click
 					}
