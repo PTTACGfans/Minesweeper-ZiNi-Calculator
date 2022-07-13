@@ -159,6 +159,8 @@ class Board {
 			var max_index = {x:-1, y:-1};
 
 			this.cells.forEach(e => e.forEach(cell => {
+				if (cell.x == 8 && cell.y == 11)
+					var temp = 0;
 				if (cell.number == -1)
 					return;
 				var premium = 0; // [adjacent 3bv] - [adjacent unflagged mines] - 1_[if cell is closed] - 1
@@ -192,12 +194,12 @@ class Board {
 				});
 
 				if (!cell.is_open)
-					premium-=1.001;
+					premium--;
 
 				premium--;
 				
-				if (premium <=0 && cell.is_open && unflagged==0) // remove useless chord
-					return;
+				//if (premium <=0 && cell.is_open && unflagged==0) // remove useless chord
+				//	return;
 
 				if (premium >= max_premium)
 				{
@@ -213,12 +215,75 @@ class Board {
 				return result;
 			var max_index = {x:max_index_lst[choose_index].x, y:max_index_lst[choose_index].y};
 
-			if (max_premium >= -0.001)
+			if (max_premium >= 0)
 			{
 				if (!this.cells[max_index.x][max_index.y].is_open)
-				{
+				{					
+					var check_can_chord = false;
+					var can_chord_index;
+					this.arround(max_index).forEach(a => { 
+						if (!a.is_open)
+							return;
+						if (a.number == -1)
+							return;
+						if (a.x == max_index.x && a.y == max_index.y)
+							return;
+						
+						var have_unflag = false;
+						var have_extra_3bv = false;
+						this.arround(a).forEach(b => { 
+							if (b.is_open)
+								return;
+							if (b.number == -1)
+								have_unflag = true;
+							if (b.number != -1 && (b.x < max_index.x-1 || b.x > max_index.x+1 || b.y < max_index.y-1 || b.y > max_index.y+1))
+								have_extra_3bv = true;
+						});
+						
+						if (!have_unflag && have_extra_3bv)
+						{
+							check_can_chord = true;
+							can_chord_index = a;
+						}
+					});
+					
 					result.zini++;
-					result.zini_path.push({x:max_index.x, y:max_index.y, click:1}); //left click
+					if (check_can_chord)
+					{
+						this.arround(can_chord_index).forEach(a => {
+							if (a.is_open)
+								return;
+
+							if (a.number == 0)
+							{
+								if (!a.is_open)
+									this.open_opening(a);
+							}
+							else
+							{
+								a.is_open = true;
+							}
+						});
+						result.zini_path.push({x:can_chord_index.x, y:can_chord_index.y, click:3}); //chord
+					}
+					else
+					{
+						var behind_opening = false;
+						var opening_index;
+						this.arround(max_index).forEach(a => {
+							if (a.x == max_index.x && a.y == max_index.y)
+								return;
+							if (a.number == 0)
+							{
+								behind_opening = true;
+								opening_index = a;
+							}
+						});
+						if (behind_opening)
+							result.zini_path.push({x:opening_index.x, y:opening_index.y, click:3}); //left click
+						else
+							result.zini_path.push({x:max_index.x, y:max_index.y, click:1}); //left click
+					}
 				}
 				
 				this.arround(max_index).forEach(a => {
