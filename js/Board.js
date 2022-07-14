@@ -136,7 +136,7 @@ class Board {
 		
 		for (var i=0 ; i<loop_count ; i++)
 		{
-			var random_zini_result = this.random_zini();
+			var random_zini_result = this.random_zini(i%2==1 && loop_count>100);
 			
 			if (this.zini > random_zini_result.zini || this.zini == 0)
 			{
@@ -146,11 +146,12 @@ class Board {
 		}
 	}
 	
-	random_zini() {
+	random_zini(two_step) {
 		
 		var result = {zini:0, zini_path:[]};
 
 		this.cells.forEach(e => e.forEach(cell => cell.is_open = false));
+		this.cells.forEach(e => e.forEach(cell => cell.all_open = false));
 		
 		while (true)
 		{
@@ -159,15 +160,19 @@ class Board {
 			var max_index = {x:-1, y:-1};
 
 			this.cells.forEach(e => e.forEach(cell => {
+				if (cell.all_open)
+					return;
 				if (cell.number == -1)
 					return;
 				var premium = 0; // [adjacent 3bv] - [adjacent unflagged mines] - 1_[if cell is closed] - 1
 				var unflagged = 0;
 				var temp_group = [];
 
+				var have_unopen = false;
 				this.arround(cell).forEach(a => {
 					if (a.is_open)
 						return;
+					have_unopen = true;
 					if (a.number != -1)
 					{
 						if (a.group <= this.opening_count)
@@ -190,6 +195,8 @@ class Board {
 						unflagged++;
 					}
 				});
+				if (!have_unopen)
+					cell.all_open = true;
 
 				if (!cell.is_open)
 					premium--;
@@ -199,6 +206,52 @@ class Board {
 				if (premium <=0 && cell.is_open && unflagged==0) // remove useless chord
 					return;
 
+				var max_adjacent_premium = 0;
+				
+				if (premium > 0 && two_step)
+				{
+					this.arround(cell).forEach(a => {
+						if (a.number != -1)
+							return;
+						if (a.number == 0)
+							return;
+						var adjacent_premium = -1;
+						var temp_group2 = temp_group.slice();
+						
+						this.arround(a).forEach(b => {
+							
+							if (b.is_open)
+								return;
+							if (!(b.x < cell.x-1 || b.x > cell.x+1 || b.y < cell.y-1 || b.y > cell.y+1))
+								return;
+							if (b.number != -1)
+							{
+								if (b.group <= this.opening_count)
+								{
+									if (b.number == 0)
+									{
+										if (!temp_group2.includes(b.group))
+										{
+											temp_group2.push(b.group);
+											adjacent_premium++;
+										}
+									}
+								}
+								else
+									adjacent_premium++;
+							}
+							else
+								adjacent_premium--;
+						});
+						
+						if (adjacent_premium > max_adjacent_premium)
+							max_adjacent_premium = adjacent_premium;
+					});
+				}
+				if (max_adjacent_premium > 0 && max_adjacent_premium > premium)
+					return;
+				premium += max_adjacent_premium;
+				
 				if (premium >= max_premium)
 				{
 					if (premium > max_premium)
@@ -228,17 +281,26 @@ class Board {
 							return;
 						
 						var have_unflag = false;
-						var have_extra_3bv = false;
+						var have_extra_3bv = 0;
+						var need_flag_index_temp = [];
 						this.arround(a).forEach(b => { 
 							if (b.is_open)
 								return;
 							if (b.number == -1)
-								have_unflag = true;
+							{
+								if (b.x < max_index.x-1 || b.x > max_index.x+1 || b.y < max_index.y-1 || b.y > max_index.y+1)
+									have_unflag = true;
+								else
+									have_extra_3bv--;
+							}
 							if (b.number != -1 && (b.x < max_index.x-1 || b.x > max_index.x+1 || b.y < max_index.y-1 || b.y > max_index.y+1))
-								have_extra_3bv = true;
+							{
+								if (b.group > this.opening_count)
+									have_extra_3bv++;
+							}
 						});
 						
-						if (!have_unflag && have_extra_3bv)
+						if (!have_unflag && have_extra_3bv > 0)
 						{
 							check_can_chord = true;
 							can_chord_index = a;
@@ -251,18 +313,24 @@ class Board {
 						this.arround(can_chord_index).forEach(a => {
 							if (a.is_open)
 								return;
-
+							
 							if (a.number == 0)
 							{
 								if (!a.is_open)
 									this.open_opening(a);
 							}
 							else
-							{
+							{								
+								if (a.number == -1)
+								{
+									result.zini++;
+									result.zini_path.push({x:a.x, y:a.y, click:2}); //right click
+								}
 								a.is_open = true;
 							}
 						});
 						result.zini_path.push({x:can_chord_index.x, y:can_chord_index.y, click:3}); //chord
+						continue;
 					}
 					else
 					{

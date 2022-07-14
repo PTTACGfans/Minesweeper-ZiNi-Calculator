@@ -359,6 +359,7 @@ angular.module('mainApp', [])
 	}
 	
 	$scope.calculate = async function() {
+		console.time('calculate');
 		clearDisplay();
 		setQueryString();
 		setCookieSetting();
@@ -389,6 +390,7 @@ angular.module('mainApp', [])
 			
 			document.getElementById('result_tab').click();
 		}
+		console.timeEnd('calculate');
 	};
 	
 	function getZiNiLoopCount() {
