@@ -211,7 +211,7 @@ class Board {
 				if (premium > 0 && two_step)
 				{
 					this.arround(cell).forEach(a => {
-						if (a.number != -1)
+						if (a.number == -1)
 							return;
 						if (a.number == 0)
 							return;
