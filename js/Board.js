@@ -270,6 +270,8 @@ class Board {
 			{
 				if (!this.cells[max_index.x][max_index.y].is_open)
 				{					
+					var max_extra_cell = 0;
+					var max_extra_3bv = 0;
 					var check_can_chord = false;
 					var can_chord_index;
 					this.arround(max_index).forEach(a => { 
@@ -280,28 +282,31 @@ class Board {
 						if (a.x == max_index.x && a.y == max_index.y)
 							return;
 						
-						var have_unflag = false;
+						var have_extra_cell = 0;
 						var have_extra_3bv = 0;
 						var need_flag_index_temp = [];
 						this.arround(a).forEach(b => { 
 							if (b.is_open)
 								return;
-							if (b.number == -1)
+							if (b.number == -1 && (b.x < max_index.x-1 || b.x > max_index.x+1 || b.y < max_index.y-1 || b.y > max_index.y+1))
 							{
-								if (b.x < max_index.x-1 || b.x > max_index.x+1 || b.y < max_index.y-1 || b.y > max_index.y+1)
-									have_unflag = true;
-								else
-									have_extra_3bv--;
+								have_extra_cell--;
+								have_extra_3bv--;
 							}
 							if (b.number != -1 && (b.x < max_index.x-1 || b.x > max_index.x+1 || b.y < max_index.y-1 || b.y > max_index.y+1))
 							{
+								have_extra_cell++;
 								if (b.group > this.opening_count)
+								{
 									have_extra_3bv++;
+								}
 							}
 						});
 						
-						if (!have_unflag && have_extra_3bv > 0)
+						if ((have_extra_3bv > max_extra_3bv) || (have_extra_3bv == max_extra_3bv && have_extra_cell > max_extra_cell))
 						{
+							max_extra_3bv = have_extra_3bv;
+							max_extra_cell = have_extra_cell;
 							check_can_chord = true;
 							can_chord_index = a;
 						}
