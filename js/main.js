@@ -48,7 +48,7 @@ angular.module('mainApp', [])
 			$scope.boardSizeCus_width = 8;
 		$scope.boardSizeCus_width = Math.round($scope.boardSizeCus_width);
 		if ($scope.boardSizeCus_width < 1) $scope.boardSizeCus_width = 1;
-		if ($scope.boardSizeCus_width > 80) $scope.boardSizeCus_width = 80;
+		if ($scope.boardSizeCus_width > 100) $scope.boardSizeCus_width = 100;
 	};
 	
 	$scope.check_boardSizeCus_height = function() {
@@ -56,7 +56,7 @@ angular.module('mainApp', [])
 			$scope.boardSizeCus_height = 8;
 		$scope.boardSizeCus_height = Math.round($scope.boardSizeCus_height);
 		if ($scope.boardSizeCus_height < 1) $scope.boardSizeCus_height = 1;
-		if ($scope.boardSizeCus_height > 80) $scope.boardSizeCus_height = 80;
+		if ($scope.boardSizeCus_height > 100) $scope.boardSizeCus_height = 100;
 	};
 	
 	$scope.check_ziniLoopCountFixed = function() {
