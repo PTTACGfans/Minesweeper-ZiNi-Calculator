@@ -90,7 +90,8 @@ angular.module('mainApp', [])
 				url.set('b',3);
 				break;
 			case "boardSizeCus":
-				url.set('b',$scope.boardSizeCus_width.toString().padStart(2,"0") + $scope.boardSizeCus_height.toString().padStart(2,"0"));
+				var max_length = $scope.boardSizeCus_width.toString().length;
+				url.set('b',$scope.boardSizeCus_width.toString().padStart(max_length,"0") + $scope.boardSizeCus_height.toString().padStart(max_length,"0"));
 				break;
 		}
 		if ($scope.mines != 0)
@@ -806,8 +807,8 @@ angular.module('mainApp', [])
 					break;
 				default:
 					$scope.boardSize = "boardSizeCus";
-					$scope.boardSizeCus_width = parseInt(url.get('b').substring(0,2));
-					$scope.boardSizeCus_height = parseInt(url.get('b').substring(2,4));
+					$scope.boardSizeCus_width = parseInt(url.get('b').substring(0,url.get('b').length/2));
+					$scope.boardSizeCus_height = parseInt(url.get('b').substring(url.get('b').length/2,url.get('b').length));
 					$scope.check_boardSizeCus_width();
 					$scope.check_boardSizeCus_height();
 					break;
