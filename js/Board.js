@@ -57,11 +57,23 @@ class Board {
 		cell.number = this.arround(cell).filter(a => a.number == -1).length;
 	}
 	
-	arround(cell) {
+	arround(cell) { // 3x3 cells
 		var result = [];
 		for (var i = Math.max(0, cell.x - 1); i <= Math.min(this.width - 1, cell.x + 1); i++)
 		{
 			for (var j = Math.max(0, cell.y - 1); j <= Math.min(this.height - 1, cell.y + 1); j++)
+			{
+				result.push(this.cells[i][j]);
+			}
+		}
+		return result;
+	}
+	
+	wide_arround(cell) { // 5x5 cells
+		var result = [];
+		for (var i = Math.max(0, cell.x - 2); i <= Math.min(this.width - 1, cell.x + 2); i++)
+		{
+			for (var j = Math.max(0, cell.y - 2); j <= Math.min(this.height - 1, cell.y + 2); j++)
 			{
 				result.push(this.cells[i][j]);
 			}
@@ -136,7 +148,7 @@ class Board {
 		
 		for (var i=0 ; i<loop_count ; i++)
 		{
-			var random_zini_result = this.random_zini(i%2==1 && loop_count>100);
+			var random_zini_result = this.random_zini(i%2==1 && loop_count>100, i%100==99 && loop_count>100); // 若 loop count 夠大,則每2盤執行1次 two_step,每100盤執行一次wide_candidate
 			
 			if (this.zini > random_zini_result.zini || this.zini == 0)
 			{
@@ -146,7 +158,7 @@ class Board {
 		}
 	}
 	
-	random_zini(two_step) {
+	random_zini(two_step, wide_candidate) {
 		
 		var result = {zini:0, zini_path:[]};
 
@@ -207,15 +219,18 @@ class Board {
 					return;
 
 				var max_adjacent_premium = 0;
+				var max_adjacent_premium_related = 0;
 				
-				if (premium > 0 && two_step)
+				if ((premium > 0 || wide_candidate) && two_step)
 				{
-					this.arround(cell).forEach(a => {
+					var arround_cells = (wide_candidate) ? this.wide_arround(cell) : this.arround(cell);
+					arround_cells.forEach(a => {
 						if (a.number == -1)
 							return;
 						if (a.number == 0)
 							return;
-						var adjacent_premium = -1;
+						var adjacent_premium = (!a.is_open && (a.x < cell.x-1 || a.x > cell.x+1 || a.y < cell.y-1 || a.y > cell.y+1)) ? -2 : -1; // -2 for open this cell and chord, -1 for chord (already open from chord of cell)
+						var adjacent_premium_related = (!a.is_open && adjacent_premium==-1) ? 1 : 0; // adjacent_premium - adjacent_premium_related = premium of adjacent without chord of cell
 						var temp_group2 = temp_group.slice();
 						
 						this.arround(a).forEach(b => {
@@ -223,7 +238,13 @@ class Board {
 							if (b.is_open)
 								return;
 							if (!(b.x < cell.x-1 || b.x > cell.x+1 || b.y < cell.y-1 || b.y > cell.y+1))
+							{
+								if (b.number == -1)
+									adjacent_premium_related++;
+								if (b.number != -1 && b.group > this.opening_count)
+									adjacent_premium_related--;
 								return;
+							}
 							if (b.number != -1)
 							{
 								if (b.group <= this.opening_count)
@@ -245,10 +266,13 @@ class Board {
 						});
 						
 						if (adjacent_premium > max_adjacent_premium)
+						{
 							max_adjacent_premium = adjacent_premium;
+							max_adjacent_premium_related = adjacent_premium_related;
+						}
 					});
 				}
-				if (max_adjacent_premium > 0 && max_adjacent_premium > premium)
+				if (max_adjacent_premium > 0 && (max_adjacent_premium - max_adjacent_premium_related) > premium) // better chord max_adjacent_premium first
 					return;
 				premium += max_adjacent_premium;
 				
@@ -284,7 +308,6 @@ class Board {
 						
 						var have_extra_cell = 0;
 						var have_extra_3bv = 0;
-						var need_flag_index_temp = [];
 						this.arround(a).forEach(b => { 
 							if (b.is_open)
 								return;
