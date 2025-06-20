@@ -826,6 +826,10 @@ angular.module('mainApp', [])
 			setEditorCounter();
 			setResultCounter();
 		}
+		if (url.get('c')==1)
+		{
+			$scope.calculate();
+		}
 		showMain();
 	}
 	initial();	
